@@ -62,6 +62,7 @@ def get_displacement(board_code_start, board_code_finish):
 
     return x_displacement, y_displacement
 
+
 def is_valid_row(board_code_start, board_code_finish):
     if is_corner(board_code_start) and is_corner(board_code_finish) and int(board_code_start[1]) != int(board_code_finish[1]): # Diagonal Row
         displacement = get_displacement(board_code_start, board_code_finish)
@@ -74,6 +75,22 @@ def is_valid_row(board_code_start, board_code_finish):
         return math.sqrt(final_value) == math.sqrt(8)
 
     return int(board_code_start[1]) == int(board_code_finish[1]) or str(board_code_start[0]) == str(board_code_finish[0]) # Straight Row
+
+def ray_displacement(board_code_start, displacement):
+    board_index = translate_code_to_board_index(board_code_start)
+
+    return translate_board_index_to_code(((board_index[0] + displacement[0]), abs((board_index[1] + displacement[1]))))
+
+def fire_raycast(board_code, angle, length):
+    letter = board_code[0]
+    y_displacement = 2 * (math.sin(angle) * length)
+
+    if letter == "A":
+        y_displacement += -(2 * y_displacement)
+
+    print(str(y_displacement))
+
+    return ray_displacement(board_code, (length, y_displacement))
 
 def is_corner(board_code):
     letter = board_code[0]
@@ -93,7 +110,8 @@ def print_board():
 
     print(board)
 
-print(str(is_valid_row("B1", "B3")))
+print(str(fire_raycast("A1", 30, 1)))
+print(str(ray_displacement("A1", (1, -2))))
 
 print("Welcome to Tick Tack Toe!")
 
