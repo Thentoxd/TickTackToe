@@ -69,7 +69,7 @@ def is_valid_row(board_code_start, board_code_finish):
         x_displacement = displacement[0]
         y_displacement = displacement[1]
 
-        final_value = (abs(y_displacement * y_displacement)) + abs(x_displacement * x_displacement)
+        final_value = (y_displacement * y_displacement) + (x_displacement * x_displacement)
 
         return math.sqrt(final_value) == math.sqrt(8)
 
