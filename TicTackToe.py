@@ -73,6 +73,8 @@ def is_valid_row(board_code_start, board_code_finish):
 
         return math.sqrt(final_value) == math.sqrt(8)
 
+    return int(board_code_start[1]) == int(board_code_finish[1]) or str(board_code_start[0]) == str(board_code_finish[0]) # Straight Row
+
 def is_corner(board_code):
     letter = board_code[0]
     number = int(board_code[1])
@@ -91,8 +93,7 @@ def print_board():
 
     print(board)
 
-print(str(get_displacement("A1", "C3")))
-print(str(is_valid_row("A3", "C1")))
+print(str(is_valid_row("B1", "B3")))
 
 print("Welcome to Tick Tack Toe!")
 
