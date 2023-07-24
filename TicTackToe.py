@@ -29,11 +29,11 @@ def translate_code_to_board_index(code):
 
 def translate_board_index_to_code(board_index):
     if board_index[1] == 0:
-        return "A" + str(board_index[0] + 1)
+        return "A" + str(int(board_index[0]) + 1)
     elif board_index[1] == 1:
-        return "B" + str(board_index[0] + 1)
+        return "B" + str(int(board_index[0]) + 1)
     elif board_index[1] == 2:
-        return "C" + str(board_index[0] + 1)
+        return "C" + str(int(board_index[0]) + 1)
 
 def input_code_to_board(code):
     translation = translate_code_to_board_index(code)
@@ -76,21 +76,39 @@ def is_valid_row(board_code_start, board_code_finish):
 
     return int(board_code_start[1]) == int(board_code_finish[1]) or str(board_code_start[0]) == str(board_code_finish[0]) # Straight Row
 
-def ray_displacement(board_code_start, displacement):
-    board_index = translate_code_to_board_index(board_code_start)
+def get_codes_in_row(board_code_start, board_code_finish):
+    displacement = get_displacement(board_code_start, board_code_finish)
+    x_displacement = displacement[0]
+    y_displacement = displacement[1]
 
-    return translate_board_index_to_code(((board_index[0] + displacement[0]), abs((board_index[1] + displacement[1]))))
+    if is_corner(board_code_start) and is_corner(board_code_finish) and int(board_code_start[1]) != int(board_code_finish[1]): # Diagonal
+        board_start_translation = translate_code_to_board_index(board_code_start)
+        middle_value = (int((board_start_translation[0] + (x_displacement / 2))), int((board_start_translation[1] - (y_displacement / 2))))
 
-def fire_raycast(board_code, angle, length):
-    letter = board_code[0]
-    y_displacement = 2 * (math.sin(angle) * length)
+        middle_value = translate_board_index_to_code(middle_value)
 
-    if letter == "A":
-        y_displacement += -(2 * y_displacement)
+        return board_code_start, middle_value, board_code_finish
 
-    print(str(y_displacement))
+    elif int(board_code_start[1]) == int(board_code_finish[1]) or str(board_code_start[0]) == str(board_code_finish[0]):
+        board_code_start_translation = translate_code_to_board_index(board_code_start)
+        board_code_finish_translation = translate_code_to_board_index(board_code_finish)
 
-    return ray_displacement(board_code, (length, y_displacement))
+        board_start_x = board_code_start_translation[0]
+        board_start_y = board_code_start_translation[1]
+        board_finish_x = board_code_finish_translation[0]
+        board_finish_y = board_code_finish_translation[1]
+
+        middle_code = None
+
+        if board_start_x == board_finish_x:
+            middle_code = translate_board_index_to_code(((board_finish_x - board_start_x), board_start_y))
+
+        elif board_start_y == board_finish_y:
+            middle_code = translate_board_index_to_code(((board_start_y - board_finish_y), board_start_x))
+
+        return board_code_start, middle_code, board_code_finish
+
+
 
 def is_corner(board_code):
     letter = board_code[0]
@@ -110,10 +128,9 @@ def print_board():
 
     print(board)
 
-print(str(fire_raycast("A1", 30, 1)))
-print(str(ray_displacement("A1", (1, -2))))
-
 print("Welcome to Tick Tack Toe!")
+
+print(str(get_codes_in_row("C1", "A3")))
 
 while game_status == "ACTIVE":
     print("It's Player " + str(player_turn) + "'s turn!")
